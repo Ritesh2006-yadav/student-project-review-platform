@@ -8,52 +8,129 @@
     <link rel="stylesheet" href="/frontend/css/style.css" />
   </head>
   <body class="auth-body">
-    <main class="auth-shell">
-      <section class="hero-panel">
-        <p class="eyebrow">Faculty Review Portal</p>
-        <h1>Review student submissions from a dedicated faculty workspace.</h1>
-        <p class="hero-copy">
-          Sign in with a faculty account to approve or reject project submissions
-          and share review feedback.
-        </p>
-      </section>
+    <button class="theme-fab" type="button" data-theme-toggle aria-label="Switch theme">
+      Dark Mode
+    </button>
 
-      <section class="card auth-card">
-        <div class="auth-topbar">
-          <button class="secondary-button" type="button" data-theme-toggle>Dark Mode</button>
-        </div>
-        <div class="section-heading">
-          <div>
-            <h3>Faculty Login</h3>
-            <p>Use your faculty credentials to continue.</p>
+    <main class="auth-shell auth-shell-split">
+      <section class="auth-showcase faculty-showcase">
+        <div class="showcase-grid"></div>
+        <div class="showcase-content">
+          <p class="eyebrow">Faculty Review Command Center</p>
+          <h1>
+            Review with <span class="gradient-text">AI-grade clarity</span>
+          </h1>
+          <p class="hero-copy">
+            Move through project approvals faster with a focused verification
+            workspace built for academic reviewers.
+          </p>
+
+          <div class="feature-tags">
+            <span class="feature-chip">Rubric scoring</span>
+            <span class="feature-chip">Risk detection</span>
+            <span class="feature-chip">Feedback loop</span>
+            <span class="feature-chip">Audit history</span>
+          </div>
+
+          <div class="showcase-stats">
+            <article class="stat-card">
+              <strong>1.8x</strong>
+              <span>Faster review cycles</span>
+            </article>
+            <article class="stat-card">
+              <strong>340+</strong>
+              <span>Faculty approvals</span>
+            </article>
+            <article class="stat-card">
+              <strong>99.2%</strong>
+              <span>Secure access uptime</span>
+            </article>
           </div>
         </div>
+      </section>
 
-        <form id="faculty-login-form" class="auth-form">
-          <label>
-            <span>Email</span>
-            <input
-              type="email"
-              id="faculty-email"
-              name="email"
-              placeholder="teacher@gmail.com"
-              required
-            />
-          </label>
-          <label>
-            <span>Password</span>
-            <input
-              type="password"
-              id="faculty-password"
-              name="password"
-              placeholder="Enter password"
-              required
-            />
-          </label>
-          <button type="submit" class="primary-button">Login</button>
-        </form>
+      <section class="auth-panel">
+        <div class="auth-panel-inner">
+          <div class="auth-brand">
+            <span class="brand-badge">FR</span>
+            <div>
+              <p class="auth-kicker">Faculty Access</p>
+              <h2>Verification portal</h2>
+            </div>
+          </div>
 
-        <div id="faculty-login-message" class="message"></div>
+          <div class="auth-intro auth-intro-tight">
+            <h3>Sign in with faculty credentials</h3>
+            <p>Use your review account to manage project decisions and feedback.</p>
+          </div>
+
+          <form id="faculty-login-form" class="auth-form">
+            <label class="field">
+              <span>Email</span>
+              <div class="input-shell">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path
+                      d="M4 6.75h16A1.25 1.25 0 0 1 21.25 8v8A1.25 1.25 0 0 1 20 17.25H4A1.25 1.25 0 0 1 2.75 16V8A1.25 1.25 0 0 1 4 6.75Zm0 1.5a.2.2 0 0 0-.2.2v.14l8.2 5.25 8.2-5.25v-.14a.2.2 0 0 0-.2-.2H4Zm16 7.5a.2.2 0 0 0 .2-.2v-5.18l-7.53 4.82a1.25 1.25 0 0 1-1.34 0L3.8 10.37v5.18a.2.2 0 0 0 .2.2h16Z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  type="email"
+                  id="faculty-email"
+                  name="email"
+                  placeholder="teacher@example.edu"
+                  required
+                />
+              </div>
+            </label>
+
+            <label class="field">
+              <span>Password</span>
+              <div class="input-shell">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path
+                      d="M7.75 10V8.75a4.25 4.25 0 1 1 8.5 0V10h.75A2.25 2.25 0 0 1 19.25 12.25v6.5A2.25 2.25 0 0 1 17 21H7a2.25 2.25 0 0 1-2.25-2.25v-6.5A2.25 2.25 0 0 1 7 10h.75Zm1.5 0h5.5V8.75a2.75 2.75 0 0 0-5.5 0V10Zm-2.25 1.5a.75.75 0 0 0-.75.75v6.5c0 .414.336.75.75.75h10a.75.75 0 0 0 .75-.75v-6.5a.75.75 0 0 0-.75-.75H7Zm5 1.75a1.75 1.75 0 0 1 1 3.186V18a.75.75 0 0 1-1.5 0v-1.564a1.75 1.75 0 0 1 .5-3.436Z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  type="password"
+                  id="faculty-password"
+                  name="password"
+                  placeholder="Enter password"
+                  required
+                  data-password-input
+                />
+                <button
+                  class="toggle-visibility"
+                  type="button"
+                  data-password-toggle
+                  aria-label="Show password"
+                >
+                  Show
+                </button>
+              </div>
+            </label>
+
+            <div class="auth-meta">
+              <label class="checkbox-row">
+                <input type="checkbox" name="staySignedIn" />
+                <span>Stay signed in</span>
+              </label>
+              <a href="/" class="text-link">Student login</a>
+            </div>
+
+            <button type="submit" class="primary-button auth-submit">Login</button>
+
+            <button type="button" class="secondary-button sso-button" data-sso-button>
+              Continue with campus SSO
+            </button>
+          </form>
+
+          <div id="faculty-login-message" class="message" aria-live="polite"></div>
+        </div>
       </section>
     </main>
 

@@ -9,59 +9,136 @@
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar">
-        <div>
-          <p class="eyebrow">Student Workspace</p>
-          <h2>Project Submission</h2>
+      <aside class="sidebar app-sidebar">
+        <div class="sidebar-top">
+          <a href="/dashboard" class="brand-lockup">
+            <span class="brand-mark">SP</span>
+            <span>
+              <strong>EduPort</strong>
+              <small>Student Portal</small>
+            </span>
+          </a>
+
+          <nav class="nav-links">
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/projects" class="nav-link">My Projects</a>
+            <a href="/add-project" class="nav-link active">Upload Project</a>
+            <span class="nav-link nav-link-muted">My Certificates</span>
+            <span class="nav-link nav-link-muted">Messages</span>
+            <span class="nav-link nav-link-muted">Notifications</span>
+            <span class="nav-link nav-link-muted">Settings</span>
+          </nav>
         </div>
-        <nav class="nav-links">
-          <a href="/dashboard" class="nav-link">Dashboard</a>
-          <a href="/add-project" class="nav-link active">Add Project</a>
-          <a href="/projects" class="nav-link">My Projects</a>
-        </nav>
-        <button class="secondary-button theme-toggle" type="button" data-theme-toggle>Dark Mode</button>
-        <button id="logout-button" class="secondary-button">Logout</button>
+
+        <div class="sidebar-bottom">
+          <button class="secondary-button theme-toggle" type="button" data-theme-toggle>
+            Dark Mode
+          </button>
+          <button id="logout-button" class="secondary-button" type="button">Logout</button>
+        </div>
       </aside>
 
-      <main class="content">
-        <header class="page-header compact">
+      <main class="content app-content">
+        <header class="app-header">
           <div>
-            <p class="eyebrow">New Submission</p>
-            <h1>Add Project</h1>
+            <p class="page-kicker">Upload Project</p>
+            <h1>Submit your project for review</h1>
+            <p class="page-subcopy">
+              Add your title, GitHub link, documentation, and supporting certificate file.
+            </p>
+          </div>
+
+          <div class="header-actions">
+            <a href="/projects" class="secondary-link">View Projects</a>
           </div>
         </header>
 
-        <section class="card">
-          <form id="project-form" class="project-form">
-            <input type="hidden" id="project-id" />
-
-            <label>
-              <span>Project Title</span>
-              <input type="text" id="title" name="title" required />
-            </label>
-
-            <label>
-              <span>Description</span>
-              <textarea id="description" name="description" rows="5" required></textarea>
-            </label>
-
-            <label>
-              <span>GitHub URL</span>
-              <input type="url" id="githubUrl" name="githubUrl" required />
-            </label>
-
-            <label>
-              <span>Certification File</span>
-              <input type="file" id="certificationFile" name="certificationFile" />
-            </label>
-
-            <div class="button-row">
-              <button type="submit" class="primary-button">Save Project</button>
-              <a href="/projects" class="secondary-link">View Projects</a>
+        <section class="dashboard-grid upload-layout">
+          <article class="panel panel-accent">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">Submission Guidelines</p>
+                <h3>Prepare a high-quality review package</h3>
+              </div>
             </div>
-          </form>
 
-          <div id="project-message" class="message"></div>
+            <div class="guideline-list">
+              <div class="guideline-item">
+                <strong>Clean title</strong>
+                <p>Use a clear, portfolio-ready project name.</p>
+              </div>
+              <div class="guideline-item">
+                <strong>Meaningful description</strong>
+                <p>Summarize the problem, solution, and core outcome.</p>
+              </div>
+              <div class="guideline-item">
+                <strong>Valid repository</strong>
+                <p>Make sure your GitHub URL is accessible and up to date.</p>
+              </div>
+              <div class="guideline-item">
+                <strong>Certificate proof</strong>
+                <p>Attach the supporting file if certification is available.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel panel-wide">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">Project Form</p>
+                <h3>Complete your submission</h3>
+              </div>
+            </div>
+
+            <form id="project-form" class="project-form enhanced-form">
+              <input type="hidden" id="project-id" />
+
+              <label class="field field-full">
+                <span>Certification File</span>
+                <div class="upload-dropzone">
+                  <div class="upload-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" focusable="false">
+                      <path
+                        d="M12 3.75a4.75 4.75 0 0 1 4.717 4.186l.08.752.747.11A4.25 4.25 0 1 1 17 17.25h-2.25a.75.75 0 0 1 0-1.5H17a2.75 2.75 0 1 0-.485-5.457l-1.367-.2-.145-1.374a3.25 3.25 0 0 0-6.437 0l-.145 1.374-1.367.2A2.75 2.75 0 1 0 7 15.75h2.25a.75.75 0 0 1 0 1.5H7A4.25 4.25 0 1 1 6.456 8.798l.747-.11.08-.752A4.75 4.75 0 0 1 12 3.75Zm.53 6.22 2.22 2.22a.75.75 0 1 1-1.06 1.06l-.94-.939v5.939a.75.75 0 0 1-1.5 0v-5.94l-.94.94a.75.75 0 0 1-1.06-1.06l2.22-2.22a.75.75 0 0 1 1.06 0Z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <strong>Drop your project file here</strong>
+                    <p>Support: PDF, DOC, DOCX, PPT, PPTX and image files</p>
+                  </div>
+                  <label class="secondary-button file-trigger">
+                    Choose File
+                    <input type="file" id="certificationFile" name="certificationFile" />
+                  </label>
+                </div>
+              </label>
+
+              <div class="form-grid">
+                <label class="field">
+                  <span>Project Title</span>
+                  <input type="text" id="title" name="title" required />
+                </label>
+
+                <label class="field">
+                  <span>GitHub URL</span>
+                  <input type="url" id="githubUrl" name="githubUrl" required />
+                </label>
+              </div>
+
+              <label class="field">
+                <span>Description</span>
+                <textarea id="description" name="description" rows="6" required></textarea>
+              </label>
+
+              <div class="button-row">
+                <button type="submit" class="primary-button">Save Project</button>
+                <a href="/projects" class="secondary-link">View Projects</a>
+              </div>
+            </form>
+
+            <div id="project-message" class="message"></div>
+          </article>
         </section>
       </main>
     </div>

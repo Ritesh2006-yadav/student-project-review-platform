@@ -6,72 +6,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Faculty Dashboard | Student Portfolio Platform</title>
     <link rel="stylesheet" href="/frontend/css/style.css" />
-    <style>
-      .faculty-status-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-weight: 700;
-        font-size: 0.85rem;
-        text-transform: capitalize;
-      }
-
-      .faculty-status-pending {
-        background: #fef3c7;
-        color: #92400e;
-      }
-
-      .faculty-status-approved {
-        background: #d1fae5;
-        color: #065f46;
-      }
-
-      .faculty-status-rejected {
-        background: #fee2e2;
-        color: #991b1b;
-      }
-    </style>
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar">
-        <div>
-          <p class="eyebrow">Faculty Workspace</p>
-          <h2>Faculty Dashboard</h2>
+      <aside class="sidebar app-sidebar">
+        <div class="sidebar-top">
+          <a href="/faculty-dashboard.html" class="brand-lockup">
+            <span class="brand-mark">FR</span>
+            <span>
+              <strong>EduPort</strong>
+              <small>Faculty Review</small>
+            </span>
+          </a>
+
+          <nav class="nav-links">
+            <a href="/faculty-dashboard.html" class="nav-link active">Dashboard</a>
+            <span class="nav-link nav-link-muted">Review Queue</span>
+            <span class="nav-link nav-link-muted">Messages</span>
+            <span class="nav-link nav-link-muted">Notifications</span>
+            <span class="nav-link nav-link-muted">Settings</span>
+          </nav>
         </div>
-        <button class="secondary-button theme-toggle" type="button" data-theme-toggle>Dark Mode</button>
-        <button id="faculty-logout-button" class="secondary-button" type="button">Logout</button>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-profile">
+            <div class="sidebar-avatar">F</div>
+            <div>
+              <strong>Faculty Panel</strong>
+              <small>Submission review console</small>
+            </div>
+          </div>
+
+          <button class="secondary-button theme-toggle" type="button" data-theme-toggle>
+            Dark Mode
+          </button>
+          <button id="faculty-logout-button" class="secondary-button" type="button">Logout</button>
+        </div>
       </aside>
 
-      <main class="content">
-        <header class="page-header compact">
+      <main class="content app-content">
+        <header class="app-header">
           <div>
-            <p class="eyebrow">Submission Review</p>
-            <h1>Project Verification Queue</h1>
+            <p class="page-kicker">Faculty Dashboard</p>
+            <h1>Project verification queue</h1>
+            <p class="page-subcopy">
+              Review submissions, inspect evidence, and approve or reject projects quickly.
+            </p>
+          </div>
+
+          <div class="header-actions">
+            <label class="search-shell">
+              <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M10.5 4a6.5 6.5 0 0 1 5.174 10.438l3.444 3.444a.75.75 0 1 1-1.06 1.06l-3.444-3.444A6.5 6.5 0 1 1 10.5 4Zm0 1.5a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"
+                  />
+                </svg>
+              </span>
+              <input type="search" placeholder="Search submissions..." disabled />
+            </label>
           </div>
         </header>
 
-        <section class="card">
-          <div class="table-wrapper">
-            <table class="project-table">
-              <thead>
-                <tr>
-                  <th>Student Name</th>
-                  <th>Student Email</th>
-                  <th>Project Title</th>
-                  <th>Description</th>
-                  <th>GitHub</th>
-                  <th>File</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="faculty-projects-table"></tbody>
-            </table>
-          </div>
-          <div id="faculty-dashboard-message" class="message"></div>
+        <section class="stats-grid compact-stats">
+          <article class="metric-card metric-blue">
+            <span>Total Projects</span>
+            <strong id="faculty-total-projects">0</strong>
+            <small>All submissions</small>
+          </article>
+          <article class="metric-card metric-green">
+            <span>Approved</span>
+            <strong id="faculty-approved-projects">0</strong>
+            <small>Verified projects</small>
+          </article>
+          <article class="metric-card metric-amber">
+            <span>Pending</span>
+            <strong id="faculty-pending-projects">0</strong>
+            <small>Awaiting action</small>
+          </article>
+          <article class="metric-card metric-rose">
+            <span>Rejected</span>
+            <strong id="faculty-rejected-projects">0</strong>
+            <small>Returned for fixes</small>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel panel-wide">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">Submission Feed</p>
+                <h3>Review student projects</h3>
+              </div>
+            </div>
+
+            <div id="faculty-project-cards" class="project-stack faculty-stack"></div>
+
+            <div class="table-wrapper hidden">
+              <table class="project-table">
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Student Email</th>
+                    <th>Project Title</th>
+                    <th>Description</th>
+                    <th>GitHub</th>
+                    <th>File</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="faculty-projects-table"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel panel-side">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">Notifications</p>
+                <h3>Review insights</h3>
+              </div>
+            </div>
+            <div id="faculty-notifications" class="notification-stack"></div>
+            <div id="faculty-dashboard-message" class="message"></div>
+          </article>
         </section>
       </main>
     </div>

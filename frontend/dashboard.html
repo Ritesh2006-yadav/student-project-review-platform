@@ -9,68 +9,151 @@
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar">
-        <div>
-          <p class="eyebrow">Student Workspace</p>
-          <h2>Portfolio Dashboard</h2>
+      <aside class="sidebar app-sidebar">
+        <div class="sidebar-top">
+          <a href="/dashboard" class="brand-lockup">
+            <span class="brand-mark">SP</span>
+            <span>
+              <strong>EduPort</strong>
+              <small>Student Portal</small>
+            </span>
+          </a>
+
+          <nav class="nav-links">
+            <a href="/dashboard" class="nav-link active">Dashboard</a>
+            <a href="/projects" class="nav-link">My Projects</a>
+            <a href="/add-project" class="nav-link">Upload Project</a>
+            <span class="nav-link nav-link-muted">My Certificates</span>
+            <span class="nav-link nav-link-muted">Messages</span>
+            <span class="nav-link nav-link-muted">Notifications</span>
+            <span class="nav-link nav-link-muted">Settings</span>
+          </nav>
         </div>
-        <nav class="nav-links">
-          <a href="/dashboard" class="nav-link active">Dashboard</a>
-          <a href="/add-project" class="nav-link">Add Project</a>
-          <a href="/projects" class="nav-link">My Projects</a>
-        </nav>
-        <button class="secondary-button theme-toggle" type="button" data-theme-toggle>Dark Mode</button>
-        <button id="logout-button" class="secondary-button">Logout</button>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-profile">
+            <div class="sidebar-avatar" id="student-avatar">S</div>
+            <div>
+              <strong id="student-sidebar-name">Student</strong>
+              <small>Active learner workspace</small>
+            </div>
+          </div>
+
+          <button class="secondary-button theme-toggle" type="button" data-theme-toggle>
+            Dark Mode
+          </button>
+          <button id="logout-button" class="secondary-button" type="button">Logout</button>
+        </div>
       </aside>
 
-      <main class="content">
-        <header class="page-header">
+      <main class="content app-content">
+        <header class="app-header">
           <div>
-            <p class="eyebrow">Welcome back</p>
-            <h1 id="student-name">Loading...</h1>
+            <p class="page-kicker">Dashboard</p>
+            <h1>Track your projects and progress</h1>
+            <p class="page-subcopy">
+              Monitor review status, keep your skills updated, and showcase approved work.
+            </p>
           </div>
-          <div class="summary-grid">
-            <article class="summary-card">
-              <span>Total Projects</span>
-              <strong id="total-projects">0</strong>
-            </article>
-            <article class="summary-card">
-              <span>Approved Items</span>
-              <strong id="approved-projects">0</strong>
-            </article>
+
+          <div class="header-actions">
+            <label class="search-shell">
+              <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M10.5 4a6.5 6.5 0 0 1 5.174 10.438l3.444 3.444a.75.75 0 1 1-1.06 1.06l-3.444-3.444A6.5 6.5 0 1 1 10.5 4Zm0 1.5a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"
+                  />
+                </svg>
+              </span>
+              <input type="search" placeholder="Search anything..." disabled />
+            </label>
+            <a href="/add-project" class="primary-button">Upload Project</a>
           </div>
         </header>
 
-        <section class="card">
-          <div class="section-heading">
-            <div>
-              <h3>Skills</h3>
-              <p>Maintain a clean set of portfolio-ready skill tags.</p>
-            </div>
-          </div>
-
-          <form id="skill-form" class="inline-form">
-            <input
-              type="text"
-              id="skill-input"
-              placeholder="Add a skill and press Enter"
-              maxlength="40"
-            />
-            <button type="submit" class="primary-button">Add Skill</button>
-          </form>
-
-          <div id="skills-container" class="tag-list"></div>
-          <div id="dashboard-message" class="message"></div>
+        <section class="stats-grid">
+          <article class="metric-card metric-blue">
+            <span>Total Projects</span>
+            <strong id="total-projects">0</strong>
+            <small>All your submissions</small>
+          </article>
+          <article class="metric-card metric-green">
+            <span>Verified Projects</span>
+            <strong id="approved-projects">0</strong>
+            <small>Approved for portfolio</small>
+          </article>
+          <article class="metric-card metric-amber">
+            <span>Pending Review</span>
+            <strong id="pending-projects">0</strong>
+            <small>Awaiting faculty review</small>
+          </article>
+          <article class="metric-card metric-rose">
+            <span>Rejected</span>
+            <strong id="rejected-projects">0</strong>
+            <small>Needs revision</small>
+          </article>
         </section>
 
-        <section class="card">
-          <div class="section-heading">
-            <div>
-              <h3>Approved Portfolio</h3>
-              <p>Only approved submissions appear in your visible portfolio.</p>
+        <section class="dashboard-grid">
+          <article class="panel panel-wide">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">Recent Projects</p>
+                <h3>Latest submission activity</h3>
+              </div>
+              <a href="/projects" class="panel-link">View all</a>
             </div>
-          </div>
-          <div id="portfolio-list" class="portfolio-grid"></div>
+            <div id="recent-projects" class="data-list"></div>
+          </article>
+
+          <article class="panel panel-side">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">Profile</p>
+                <h3 id="student-name">Loading...</h3>
+              </div>
+            </div>
+            <div class="profile-highlight">
+              <div class="profile-badge">AI Ready</div>
+              <p>
+                Keep your profile polished with relevant skills and approved project highlights.
+              </p>
+            </div>
+            <div class="message" id="dashboard-message"></div>
+          </article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">Skills</p>
+                <h3>Maintain your expertise stack</h3>
+              </div>
+            </div>
+
+            <form id="skill-form" class="inline-form">
+              <input
+                type="text"
+                id="skill-input"
+                placeholder="Add a skill and press Enter"
+                maxlength="40"
+              />
+              <button type="submit" class="primary-button">Add Skill</button>
+            </form>
+
+            <div id="skills-container" class="tag-list"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">Portfolio</p>
+                <h3>Approved showcase items</h3>
+              </div>
+            </div>
+            <div id="portfolio-list" class="portfolio-grid"></div>
+          </article>
         </section>
       </main>
     </div>

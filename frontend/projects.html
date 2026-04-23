@@ -9,30 +9,94 @@
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar">
-        <div>
-          <p class="eyebrow">Student Workspace</p>
-          <h2>Project Tracker</h2>
+      <aside class="sidebar app-sidebar">
+        <div class="sidebar-top">
+          <a href="/dashboard" class="brand-lockup">
+            <span class="brand-mark">SP</span>
+            <span>
+              <strong>EduPort</strong>
+              <small>Student Portal</small>
+            </span>
+          </a>
+
+          <nav class="nav-links">
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/projects" class="nav-link active">My Projects</a>
+            <a href="/add-project" class="nav-link">Upload Project</a>
+            <span class="nav-link nav-link-muted">My Certificates</span>
+            <span class="nav-link nav-link-muted">Messages</span>
+            <span class="nav-link nav-link-muted">Notifications</span>
+            <span class="nav-link nav-link-muted">Settings</span>
+          </nav>
         </div>
-        <nav class="nav-links">
-          <a href="/dashboard" class="nav-link">Dashboard</a>
-          <a href="/add-project" class="nav-link">Add Project</a>
-          <a href="/projects" class="nav-link active">My Projects</a>
-        </nav>
-        <button class="secondary-button theme-toggle" type="button" data-theme-toggle>Dark Mode</button>
-        <button id="logout-button" class="secondary-button">Logout</button>
+
+        <div class="sidebar-bottom">
+          <button class="secondary-button theme-toggle" type="button" data-theme-toggle>
+            Dark Mode
+          </button>
+          <button id="logout-button" class="secondary-button" type="button">Logout</button>
+        </div>
       </aside>
 
-      <main class="content">
-        <header class="page-header compact">
+      <main class="content app-content">
+        <header class="app-header">
           <div>
-            <p class="eyebrow">Status Overview</p>
-            <h1>My Projects</h1>
+            <p class="page-kicker">My Projects</p>
+            <h1>Manage and track every submission</h1>
+            <p class="page-subcopy">
+              Review project status, open certificates, and resubmit updates when needed.
+            </p>
+          </div>
+
+          <div class="header-actions">
+            <label class="search-shell">
+              <span class="search-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path
+                    d="M10.5 4a6.5 6.5 0 0 1 5.174 10.438l3.444 3.444a.75.75 0 1 1-1.06 1.06l-3.444-3.444A6.5 6.5 0 1 1 10.5 4Zm0 1.5a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z"
+                  />
+                </svg>
+              </span>
+              <input type="search" placeholder="Search projects..." disabled />
+            </label>
+            <a href="/add-project" class="primary-button">New Project</a>
           </div>
         </header>
 
-        <section class="card">
-          <div class="table-wrapper">
+        <section class="stats-grid compact-stats">
+          <article class="metric-card metric-blue">
+            <span>Total</span>
+            <strong id="projects-total-count">0</strong>
+            <small>Projects submitted</small>
+          </article>
+          <article class="metric-card metric-green">
+            <span>Approved</span>
+            <strong id="projects-approved-count">0</strong>
+            <small>Portfolio ready</small>
+          </article>
+          <article class="metric-card metric-amber">
+            <span>Pending</span>
+            <strong id="projects-pending-count">0</strong>
+            <small>In review</small>
+          </article>
+          <article class="metric-card metric-rose">
+            <span>Rejected</span>
+            <strong id="projects-rejected-count">0</strong>
+            <small>Needs attention</small>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Project Queue</p>
+              <h3>Submission history</h3>
+            </div>
+          </div>
+
+          <div id="projects-card-list" class="project-stack"></div>
+
+          <div class="table-wrapper hidden">
             <table class="project-table">
               <thead>
                 <tr>
@@ -47,6 +111,7 @@
               <tbody id="projects-table-body"></tbody>
             </table>
           </div>
+
           <div id="projects-message" class="message"></div>
         </section>
       </main>

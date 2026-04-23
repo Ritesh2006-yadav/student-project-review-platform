@@ -8,9 +8,22 @@
 
   const loginForm = document.getElementById('faculty-login-form');
   const loginMessage = document.getElementById('faculty-login-message');
-  const projectsTable = document.getElementById('faculty-projects-table');
-  const dashboardMessage = document.getElementById('faculty-dashboard-message');
-  const logoutButton = document.getElementById('faculty-logout-button');
+  const projectsTable =
+    document.getElementById('faculty-projects-table') ||
+    document.getElementById('faculty-projects-body');
+  const dashboardMessage =
+    document.getElementById('faculty-dashboard-message') ||
+    document.getElementById('faculty-message');
+  const logoutButton =
+    document.getElementById('faculty-logout-button') || document.getElementById('logout-button');
+  const facultyCards = document.getElementById('faculty-project-cards');
+  const facultyNotifications = document.getElementById('faculty-notifications');
+  const facultyTotal = document.getElementById('faculty-total-projects');
+  const facultyApproved = document.getElementById('faculty-approved-projects');
+  const facultyPending = document.getElementById('faculty-pending-projects');
+  const facultyRejected = document.getElementById('faculty-rejected-projects');
+  const passwordToggles = document.querySelectorAll('[data-password-toggle]');
+  const ssoButtons = document.querySelectorAll('[data-sso-button]');
 
   const getToken = () => localStorage.getItem(TOKEN_KEY);
 
@@ -34,6 +47,20 @@
     element.className = `message ${type}`.trim();
   };
 
+  const togglePasswordVisibility = (button) => {
+    const wrapper = button.closest('.input-shell');
+    const input = wrapper ? wrapper.querySelector('[data-password-input]') : null;
+
+    if (!input) {
+      return;
+    }
+
+    const shouldShow = input.type === 'password';
+    input.type = shouldShow ? 'text' : 'password';
+    button.textContent = shouldShow ? 'Hide' : 'Show';
+    button.setAttribute('aria-label', shouldShow ? 'Hide password' : 'Show password');
+  };
+
   const redirectToFacultyLogin = () => {
     window.location.href = '/faculty';
   };
@@ -48,6 +75,54 @@
     }
 
     return 'faculty-status-pending';
+  };
+
+  const formatDate = (value) => {
+    if (!value) {
+      return 'Recently';
+    }
+
+    return new Date(value).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
+  const renderNotifications = (projects) => {
+    if (!facultyNotifications) {
+      return;
+    }
+
+    if (!projects.length) {
+      facultyNotifications.innerHTML =
+        '<p class="empty-state">New review updates will appear here when students submit projects.</p>';
+      return;
+    }
+
+    facultyNotifications.innerHTML = projects
+      .slice(0, 4)
+      .map((project) => {
+        const notificationClass = `notification-${project.status}`;
+        const label =
+          project.status === 'approved'
+            ? 'Approved'
+            : project.status === 'rejected'
+              ? 'Rejected'
+              : 'Pending';
+
+        return `
+          <article class="notification-card">
+            <div class="notification-icon ${notificationClass}">${label.charAt(0)}</div>
+            <div>
+              <strong>${project.title}</strong>
+              <p>${project.studentId ? project.studentId.name : 'Unknown Student'} submitted this project.</p>
+              <small>${formatDate(project.createdAt)}</small>
+            </div>
+          </article>
+        `;
+      })
+      .join('');
   };
 
   const facultyFetch = async (endpoint, method = 'GET', body = null) => {
@@ -82,56 +157,125 @@
 
   const renderProjects = (projects) => {
     if (!projectsTable) {
-      return;
+      if (!facultyCards) {
+        return;
+      }
     }
+
+    if (facultyTotal) {
+      facultyTotal.textContent = projects.length;
+    }
+    if (facultyApproved) {
+      facultyApproved.textContent = projects.filter((project) => project.status === 'approved').length;
+    }
+    if (facultyPending) {
+      facultyPending.textContent = projects.filter((project) => project.status === 'pending').length;
+    }
+    if (facultyRejected) {
+      facultyRejected.textContent = projects.filter((project) => project.status === 'rejected').length;
+    }
+
+    renderNotifications(projects);
 
     if (!projects.length) {
-      projectsTable.innerHTML =
-        '<tr><td colspan="8" class="empty-state">No student projects found.</td></tr>';
+      if (projectsTable) {
+        projectsTable.innerHTML =
+          '<tr><td colspan="8" class="empty-state">No student projects found.</td></tr>';
+      }
+      if (facultyCards) {
+        facultyCards.innerHTML =
+          '<p class="empty-state">No student projects found yet. New submissions will appear here.</p>';
+      }
       return;
     }
 
-    projectsTable.innerHTML = projects
+    if (projectsTable) {
+      projectsTable.innerHTML = projects
+        .map(
+          (project) => `
+            <tr>
+              <td>${project.studentId ? project.studentId.name : 'Unknown Student'}</td>
+              <td>${project.studentId ? project.studentId.email : 'N/A'}</td>
+              <td>${project.title}</td>
+              <td>${project.description || 'No description provided'}</td>
+              <td>
+                ${
+                  project.githubUrl
+                    ? `<a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Open Link</a>`
+                    : 'No GitHub link'
+                }
+              </td>
+              <td>
+                ${
+                  project.certificationFile
+                    ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View File</a>`
+                    : 'No file uploaded'
+                }
+              </td>
+              <td>
+                <span class="faculty-status-badge ${getStatusClass(project.status)}">${project.status}</span>
+              </td>
+              <td>
+                <div class="action-group">
+                  <button type="button" class="primary-button" data-approve-id="${project._id}">Approve</button>
+                  <button type="button" class="icon-button danger" data-reject-id="${project._id}">Reject</button>
+                </div>
+              </td>
+            </tr>
+          `
+        )
+        .join('');
+    }
+
+    if (facultyCards) {
+      facultyCards.innerHTML = projects
       .map(
         (project) => `
-          <tr>
-            <td>${project.studentId ? project.studentId.name : 'Unknown Student'}</td>
-            <td>${project.studentId ? project.studentId.email : 'N/A'}</td>
-            <td>${project.title}</td>
-            <td>${project.description || 'No description provided'}</td>
-            <td>
-              ${
-                project.githubUrl
-                  ? `<a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Open Link</a>`
-                  : 'No GitHub link'
-              }
-            </td>
-            <td>
-              ${
-                project.certificationFile
-                  ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View File</a>`
-                  : 'No file uploaded'
-              }
-            </td>
-            <td>
+          <article class="project-card">
+            <div class="project-card-head">
+              <div>
+                <h4>${project.title}</h4>
+                <small>
+                  ${project.studentId ? project.studentId.name : 'Unknown Student'}
+                  · ${project.studentId ? project.studentId.email : 'N/A'}
+                </small>
+              </div>
               <span class="faculty-status-badge ${getStatusClass(project.status)}">${project.status}</span>
-            </td>
-            <td>
+            </div>
+            <p>${project.description || 'No description provided'}</p>
+            <div class="project-card-meta">
+              <span>Submitted ${formatDate(project.createdAt)}</span>
+              <div class="project-card-links">
+                ${
+                  project.githubUrl
+                    ? `<a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Open Repository</a>`
+                    : '<span>No GitHub link</span>'
+                }
+                ${
+                  project.certificationFile
+                    ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View File</a>`
+                    : '<span>No file uploaded</span>'
+                }
+              </div>
+            </div>
+            <div class="project-card-actions">
+              <span>${project.feedback || 'No faculty feedback added yet.'}</span>
               <div class="action-group">
                 <button type="button" class="primary-button" data-approve-id="${project._id}">Approve</button>
                 <button type="button" class="icon-button danger" data-reject-id="${project._id}">Reject</button>
               </div>
-            </td>
-          </tr>
+            </div>
+          </article>
         `
       )
       .join('');
+    }
 
-    projectsTable.querySelectorAll('[data-approve-id]').forEach((button) => {
+    document.querySelectorAll('[data-approve-id]').forEach((button) => {
       button.addEventListener('click', () => approveProject(button.dataset.approveId));
     });
 
-    projectsTable.querySelectorAll('[data-reject-id]').forEach((button) => {
+    document.querySelectorAll('[data-reject-id]').forEach((button) => {
       button.addEventListener('click', () => rejectProject(button.dataset.rejectId));
     });
   };
@@ -176,6 +320,19 @@
   };
 
   if (loginForm) {
+    passwordToggles.forEach((button) => {
+      button.addEventListener('click', () => togglePasswordVisibility(button));
+    });
+
+    ssoButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        showMessage(
+          loginMessage,
+          'SSO can be connected later while keeping the current faculty login endpoint unchanged.'
+        );
+      });
+    });
+
     loginForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 

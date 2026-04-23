@@ -16,12 +16,17 @@
   attachLogout();
 
   const studentName = document.getElementById('student-name');
+  const sidebarName = document.getElementById('student-sidebar-name');
+  const studentAvatar = document.getElementById('student-avatar');
   const totalProjects = document.getElementById('total-projects');
   const approvedProjects = document.getElementById('approved-projects');
+  const pendingProjects = document.getElementById('pending-projects');
+  const rejectedProjects = document.getElementById('rejected-projects');
   const skillForm = document.getElementById('skill-form');
   const skillInput = document.getElementById('skill-input');
   const skillsContainer = document.getElementById('skills-container');
   const portfolioList = document.getElementById('portfolio-list');
+  const recentProjects = document.getElementById('recent-projects');
   const messageBox = document.getElementById('dashboard-message');
 
   let currentUser = null;
@@ -75,6 +80,51 @@
     });
   };
 
+  const formatDate = (value) => {
+    if (!value) {
+      return 'Recently';
+    }
+
+    return new Date(value).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
+
+  const renderRecentProjects = (projects) => {
+    if (!recentProjects) {
+      return;
+    }
+
+    recentProjects.innerHTML = '';
+
+    if (!projects.length) {
+      recentProjects.innerHTML =
+        '<p class="empty-state">Your latest submissions will appear here after you add a project.</p>';
+      return;
+    }
+
+    projects.slice(0, 5).forEach((project) => {
+      const row = document.createElement('article');
+      row.className = 'data-row';
+      row.innerHTML = `
+        <div class="data-row-top">
+          <div class="data-row-title">
+            <strong>${project.title}</strong>
+            <small>${formatDate(project.createdAt)}</small>
+          </div>
+          <span class="status-badge status-${project.status}">${project.status}</span>
+        </div>
+        <div class="data-row-bottom">
+          <span>${project.description}</span>
+          <a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Open GitHub</a>
+        </div>
+      `;
+      recentProjects.appendChild(row);
+    });
+  };
+
   const saveSkills = async (skills) => {
     try {
       const response = await fetchAPI('/api/auth/skills', 'PUT', { skills });
@@ -112,11 +162,28 @@
       setSession(getToken(), currentUser);
 
       studentName.textContent = currentUser.name;
+      if (sidebarName) {
+        sidebarName.textContent = currentUser.name;
+      }
+      if (studentAvatar) {
+        studentAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+      }
+
+      const pendingCount = projectsResponse.data.filter((project) => project.status === 'pending').length;
+      const rejectedCount = projectsResponse.data.filter((project) => project.status === 'rejected').length;
+
       totalProjects.textContent = projectsResponse.data.length;
       approvedProjects.textContent = portfolioResponse.data.length;
+      if (pendingProjects) {
+        pendingProjects.textContent = pendingCount;
+      }
+      if (rejectedProjects) {
+        rejectedProjects.textContent = rejectedCount;
+      }
 
       renderSkills();
       renderPortfolio(portfolioResponse.data);
+      renderRecentProjects(projectsResponse.data);
     } catch (error) {
       showMessage(error.message, 'error');
     }

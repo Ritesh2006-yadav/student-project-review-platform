@@ -17,6 +17,11 @@
   const projectMessage = document.getElementById('project-message');
   const projectsTableBody = document.getElementById('projects-table-body');
   const projectsMessage = document.getElementById('projects-message');
+  const projectsCardList = document.getElementById('projects-card-list');
+  const totalCount = document.getElementById('projects-total-count');
+  const approvedCount = document.getElementById('projects-approved-count');
+  const pendingCount = document.getElementById('projects-pending-count');
+  const rejectedCount = document.getElementById('projects-rejected-count');
 
   const statusClassMap = {
     pending: 'status-pending',
@@ -34,6 +39,18 @@
   };
 
   const getEditId = () => new URLSearchParams(window.location.search).get('edit');
+
+  const formatDate = (value) => {
+    if (!value) {
+      return 'Recently';
+    }
+
+    return new Date(value).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
 
   const loadProjectForEdit = async (projectId) => {
     try {
@@ -97,7 +114,7 @@
   };
 
   const renderProjectsTable = async () => {
-    if (!projectsTableBody) {
+    if (!projectsTableBody && !projectsCardList) {
       return;
     }
 
@@ -105,46 +122,103 @@
       const response = await fetchAPI('/api/projects');
       const projects = response.data;
 
+      if (totalCount) {
+        totalCount.textContent = projects.length;
+      }
+      if (approvedCount) {
+        approvedCount.textContent = projects.filter((project) => project.status === 'approved').length;
+      }
+      if (pendingCount) {
+        pendingCount.textContent = projects.filter((project) => project.status === 'pending').length;
+      }
+      if (rejectedCount) {
+        rejectedCount.textContent = projects.filter((project) => project.status === 'rejected').length;
+      }
+
       if (!projects.length) {
-        projectsTableBody.innerHTML =
-          '<tr><td colspan="6" class="empty-state">No projects submitted yet.</td></tr>';
+        if (projectsTableBody) {
+          projectsTableBody.innerHTML =
+            '<tr><td colspan="6" class="empty-state">No projects submitted yet.</td></tr>';
+        }
+        if (projectsCardList) {
+          projectsCardList.innerHTML =
+            '<p class="empty-state">No projects submitted yet. Add your first project to start the review workflow.</p>';
+        }
         return;
       }
 
-      projectsTableBody.innerHTML = projects
-        .map(
-          (project) => `
-            <tr>
-              <td>
-                <strong>${project.title}</strong>
-                <div>${project.description}</div>
-              </td>
-              <td>
-                <a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Repository</a>
-              </td>
-              <td>
-                ${
-                  project.certificationFile
-                    ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View File</a>`
-                    : 'Not uploaded'
-                }
-              </td>
-              <td>
-                <span class="status-badge ${statusClassMap[project.status]}">${project.status}</span>
-              </td>
-              <td>${project.feedback || 'Awaiting review'}</td>
-              <td>
-                <div class="action-group">
-                  <a class="icon-button" href="/add-project.html?edit=${project._id}">Edit</a>
-                  <button class="icon-button danger" data-delete-id="${project._id}" type="button">Delete</button>
-                </div>
-              </td>
-            </tr>
-          `
-        )
-        .join('');
+      if (projectsTableBody) {
+        projectsTableBody.innerHTML = projects
+          .map(
+            (project) => `
+              <tr>
+                <td>
+                  <strong>${project.title}</strong>
+                  <div>${project.description}</div>
+                </td>
+                <td>
+                  <a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Repository</a>
+                </td>
+                <td>
+                  ${
+                    project.certificationFile
+                      ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View File</a>`
+                      : 'Not uploaded'
+                  }
+                </td>
+                <td>
+                  <span class="status-badge ${statusClassMap[project.status]}">${project.status}</span>
+                </td>
+                <td>${project.feedback || 'Awaiting review'}</td>
+                <td>
+                  <div class="action-group">
+                    <a class="icon-button" href="/add-project.html?edit=${project._id}">Edit</a>
+                    <button class="icon-button danger" data-delete-id="${project._id}" type="button">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            `
+          )
+          .join('');
+      }
 
-      projectsTableBody.querySelectorAll('[data-delete-id]').forEach((button) => {
+      if (projectsCardList) {
+        projectsCardList.innerHTML = projects
+          .map(
+            (project) => `
+              <article class="project-card">
+                <div class="project-card-head">
+                  <div>
+                    <h4>${project.title}</h4>
+                    <small>Submitted on ${formatDate(project.createdAt)}</small>
+                  </div>
+                  <span class="status-badge ${statusClassMap[project.status]}">${project.status}</span>
+                </div>
+                <p>${project.description}</p>
+                <div class="project-card-meta">
+                  <span>${project.feedback || 'No faculty feedback yet.'}</span>
+                </div>
+                <div class="project-card-actions">
+                  <div class="project-card-links">
+                    <a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Open Repository</a>
+                    ${
+                      project.certificationFile
+                        ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View Certificate</a>`
+                        : '<span>Certificate not uploaded</span>'
+                    }
+                  </div>
+                  <div class="action-group">
+                    <a class="icon-button" href="/add-project.html?edit=${project._id}">Edit</a>
+                    <button class="icon-button danger" data-delete-id="${project._id}" type="button">Delete</button>
+                  </div>
+                </div>
+              </article>
+            `
+          )
+          .join('');
+      }
+
+      document.querySelectorAll('[data-delete-id]').forEach((button) => {
         button.addEventListener('click', async () => {
           try {
             await fetchAPI(`/api/projects/${button.dataset.deleteId}`, 'DELETE');
