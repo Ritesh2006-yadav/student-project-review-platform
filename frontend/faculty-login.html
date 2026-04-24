@@ -8,60 +8,53 @@
     <link rel="stylesheet" href="/frontend/css/style.css" />
   </head>
   <body class="auth-body">
-    <button class="theme-fab" type="button" data-theme-toggle aria-label="Switch theme">
-      Dark Mode
+    <button class="theme-fab theme-icon-button" type="button" data-theme-toggle aria-label="Switch theme">
+      <span class="theme-icon theme-icon-sun" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path
+            d="M12 5.75a.75.75 0 0 1 .75.75v1.19a.75.75 0 0 1-1.5 0V6.5a.75.75 0 0 1 .75-.75Zm0 10.56a.75.75 0 0 1 .75.75v1.19a.75.75 0 0 1-1.5 0v-1.19a.75.75 0 0 1 .75-.75Zm6.25-4.31a.75.75 0 0 1 .75.75.75.75 0 0 1-.75.75h-1.19a.75.75 0 0 1 0-1.5h1.19ZM7.69 12a.75.75 0 0 1-.75.75H5.75a.75.75 0 0 1 0-1.5h1.19a.75.75 0 0 1 .75.75Zm7.04-4.29.84-.84a.75.75 0 1 1 1.06 1.06l-.84.84a.75.75 0 0 1-1.06-1.06Zm-7.46 7.46.84-.84a.75.75 0 0 1 1.06 1.06l-.84.84a.75.75 0 0 1-1.06-1.06Zm8.52-.84.84.84a.75.75 0 0 1-1.06 1.06l-.84-.84a.75.75 0 1 1 1.06-1.06Zm-7.46-7.46.84.84A.75.75 0 0 1 8.11 8.77l-.84-.84a.75.75 0 0 1 1.06-1.06ZM12 8.75A3.25 3.25 0 1 1 8.75 12 3.25 3.25 0 0 1 12 8.75Zm0 1.5A1.75 1.75 0 1 0 13.75 12 1.75 1.75 0 0 0 12 10.25Z"
+          />
+        </svg>
+      </span>
+      <span class="theme-icon theme-icon-moon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path
+            d="M14.72 3.78a.75.75 0 0 1 .83.97 6.75 6.75 0 1 0 8.7 8.7.75.75 0 0 1 .97.83 8.25 8.25 0 1 1-10.5-10.5Z"
+          />
+        </svg>
+      </span>
     </button>
 
     <main class="auth-shell auth-shell-split">
-      <section class="auth-showcase faculty-showcase">
+      <section class="auth-showcase faculty-showcase faculty-showcase-minimal">
         <div class="showcase-grid"></div>
         <div class="showcase-content">
-          <p class="eyebrow">Faculty Review Command Center</p>
-          <h1>
-            Review with <span class="gradient-text">AI-grade clarity</span>
-          </h1>
+          <p class="eyebrow">Verification Workspace</p>
+          <h1>Faculty Review Portal</h1>
           <p class="hero-copy">
-            Move through project approvals faster with a focused verification
-            workspace built for academic reviewers.
+            A clean, focused sign-in experience for faculty reviewing student submissions and approvals.
           </p>
-
-          <div class="feature-tags">
-            <span class="feature-chip">Rubric scoring</span>
-            <span class="feature-chip">Risk detection</span>
-            <span class="feature-chip">Feedback loop</span>
-            <span class="feature-chip">Audit history</span>
-          </div>
-
-          <div class="showcase-stats">
-            <article class="stat-card">
-              <strong>1.8x</strong>
-              <span>Faster review cycles</span>
-            </article>
-            <article class="stat-card">
-              <strong>340+</strong>
-              <span>Faculty approvals</span>
-            </article>
-            <article class="stat-card">
-              <strong>99.2%</strong>
-              <span>Secure access uptime</span>
-            </article>
+          <div class="minimal-illustration" aria-hidden="true">
+            <span class="minimal-orb"></span>
+            <span class="minimal-line"></span>
+            <span class="minimal-line minimal-line-short"></span>
           </div>
         </div>
       </section>
 
-      <section class="auth-panel">
-        <div class="auth-panel-inner">
+      <section class="auth-panel auth-panel-minimal">
+        <div class="auth-panel-inner auth-panel-inner-minimal">
           <div class="auth-brand">
             <span class="brand-badge">FR</span>
             <div>
               <p class="auth-kicker">Faculty Access</p>
-              <h2>Verification portal</h2>
+              <h2>Sign in</h2>
             </div>
           </div>
 
           <div class="auth-intro auth-intro-tight">
-            <h3>Sign in with faculty credentials</h3>
-            <p>Use your review account to manage project decisions and feedback.</p>
+            <h3>Faculty Review Portal</h3>
+            <p>Use your faculty credentials to continue.</p>
           </div>
 
           <form id="faculty-login-form" class="auth-form">
@@ -115,18 +108,10 @@
             </label>
 
             <div class="auth-meta">
-              <label class="checkbox-row">
-                <input type="checkbox" name="staySignedIn" />
-                <span>Stay signed in</span>
-              </label>
-              <a href="/" class="text-link">Student login</a>
+              <a href="/" class="text-link text-link-subtle">Student login</a>
             </div>
 
             <button type="submit" class="primary-button auth-submit">Login</button>
-
-            <button type="button" class="secondary-button sso-button" data-sso-button>
-              Continue with campus SSO
-            </button>
           </form>
 
           <div id="faculty-login-message" class="message" aria-live="polite"></div>

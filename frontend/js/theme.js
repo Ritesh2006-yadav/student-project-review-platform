@@ -13,8 +13,14 @@
     root.setAttribute('data-theme', theme);
 
     document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
-      button.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
       button.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`);
+      button.dataset.theme = theme;
+
+      if (button.querySelector('.theme-icon')) {
+        return;
+      }
+
+      button.textContent = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
     });
   };
 
