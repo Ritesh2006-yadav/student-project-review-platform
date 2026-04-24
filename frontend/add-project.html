@@ -95,7 +95,7 @@
 
               <label class="field field-full">
                 <span>Certification File</span>
-                <div class="upload-dropzone">
+                <div class="upload-dropzone" id="upload-dropzone" data-upload-dropzone>
                   <div class="upload-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" focusable="false">
                       <path
@@ -109,8 +109,14 @@
                   </div>
                   <label class="secondary-button file-trigger">
                     Choose File
-                    <input type="file" id="certificationFile" name="certificationFile" />
+                    <input
+                      type="file"
+                      id="certificationFile"
+                      name="certificationFile"
+                      accept=".pdf,.doc,.docx,.ppt,.pptx,image/*"
+                    />
                   </label>
+                  <div id="upload-file-info" class="upload-file-info hidden" aria-live="polite"></div>
                 </div>
               </label>
 

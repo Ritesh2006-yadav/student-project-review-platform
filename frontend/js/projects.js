@@ -15,6 +15,9 @@
 
   const projectForm = document.getElementById('project-form');
   const projectMessage = document.getElementById('project-message');
+  const fileInput = document.getElementById('certificationFile');
+  const uploadDropzone = document.getElementById('upload-dropzone');
+  const uploadFileInfo = document.getElementById('upload-file-info');
   const projectsTableBody = document.getElementById('projects-table-body');
   const projectsMessage = document.getElementById('projects-message');
   const projectsCardList = document.getElementById('projects-card-list');
@@ -28,6 +31,9 @@
     approved: 'status-approved',
     rejected: 'status-rejected'
   };
+  const allowedExtensions = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'png', 'jpg', 'jpeg', 'gif', 'webp'];
+  const maxUploadSize = 10 * 1024 * 1024;
+  let selectedUploadFile = null;
 
   const showMessage = (element, message, type = '') => {
     if (!element) {
@@ -52,6 +58,140 @@
     });
   };
 
+  const formatFileSize = (size) => {
+    if (size < 1024) {
+      return `${size} B`;
+    }
+
+    if (size < 1024 * 1024) {
+      return `${(size / 1024).toFixed(1)} KB`;
+    }
+
+    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const renderSelectedFile = () => {
+    if (!uploadFileInfo) {
+      return;
+    }
+
+    if (!selectedUploadFile) {
+      uploadFileInfo.classList.add('hidden');
+      uploadFileInfo.innerHTML = '';
+      return;
+    }
+
+    uploadFileInfo.classList.remove('hidden');
+    uploadFileInfo.innerHTML = `
+      <div class="upload-file-meta">
+        <strong>${selectedUploadFile.name}</strong>
+        <span>${formatFileSize(selectedUploadFile.size)}</span>
+      </div>
+      <button type="button" class="upload-file-clear" data-clear-upload>Remove</button>
+    `;
+
+    const clearButton = uploadFileInfo.querySelector('[data-clear-upload]');
+    if (clearButton) {
+      clearButton.addEventListener('click', clearSelectedFile);
+    }
+  };
+
+  const syncFileInput = () => {
+    if (!fileInput) {
+      return;
+    }
+
+    if (!selectedUploadFile) {
+      fileInput.value = '';
+      return;
+    }
+
+    const transfer = new DataTransfer();
+    transfer.items.add(selectedUploadFile);
+    fileInput.files = transfer.files;
+  };
+
+  const clearSelectedFile = () => {
+    selectedUploadFile = null;
+    syncFileInput();
+    renderSelectedFile();
+    showMessage(projectMessage, '');
+  };
+
+  const validateUploadFile = (file) => {
+    if (!file) {
+      return 'Please choose a file to upload.';
+    }
+
+    const extension = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : '';
+
+    if (!allowedExtensions.includes(extension)) {
+      return 'Invalid file format. Please upload PDF, DOC, DOCX, PPT, PPTX, or image files.';
+    }
+
+    if (file.size > maxUploadSize) {
+      return 'File is too large. Please upload a file smaller than 10 MB.';
+    }
+
+    return '';
+  };
+
+  const setSelectedFile = (file) => {
+    const validationMessage = validateUploadFile(file);
+
+    if (validationMessage) {
+      clearSelectedFile();
+      showMessage(projectMessage, validationMessage, 'error');
+      return false;
+    }
+
+    selectedUploadFile = file;
+    syncFileInput();
+    renderSelectedFile();
+    showMessage(projectMessage, '');
+    return true;
+  };
+
+  const setupUploadDropzone = () => {
+    if (!fileInput || !uploadDropzone) {
+      return;
+    }
+
+    const setDragging = (isDragging) => {
+      uploadDropzone.classList.toggle('is-dragging', isDragging);
+    };
+
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      uploadDropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        setDragging(true);
+      });
+    });
+
+    ['dragleave', 'dragend', 'drop'].forEach((eventName) => {
+      uploadDropzone.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        setDragging(false);
+      });
+    });
+
+    uploadDropzone.addEventListener('drop', (event) => {
+      const [file] = event.dataTransfer.files;
+      if (file) {
+        setSelectedFile(file);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      const [file] = fileInput.files;
+      if (file) {
+        setSelectedFile(file);
+      }
+    });
+
+    renderSelectedFile();
+  };
+
   const loadProjectForEdit = async (projectId) => {
     try {
       const response = await fetchAPI('/api/projects');
@@ -66,6 +206,7 @@
       document.getElementById('title').value = project.title;
       document.getElementById('description').value = project.description;
       document.getElementById('githubUrl').value = project.githubUrl;
+      clearSelectedFile();
       showMessage(projectMessage, 'Editing existing project. Saving will reset status to pending.');
     } catch (error) {
       showMessage(projectMessage, error.message, 'error');
@@ -89,20 +230,30 @@
       const projectId = document.getElementById('project-id').value;
       const endpoint = projectId ? `/api/projects/${projectId}` : '/api/projects';
       const method = projectId ? 'PUT' : 'POST';
+      const fileValidationMessage = selectedUploadFile ? validateUploadFile(selectedUploadFile) : '';
 
-      const fileInput = document.getElementById('certificationFile');
-      if (!fileInput.files.length) {
+      if (fileValidationMessage) {
+        showMessage(projectMessage, fileValidationMessage, 'error');
+        return;
+      }
+
+      if (!selectedUploadFile) {
         formData.delete('certificationFile');
+      } else {
+        formData.set('certificationFile', selectedUploadFile, selectedUploadFile.name);
       }
 
       try {
         await fetchAPI(endpoint, method, formData);
         showMessage(
           projectMessage,
-          projectId ? 'Project updated successfully.' : 'Project added successfully.',
+          projectId
+            ? 'Project updated successfully. Your file was uploaded and saved.'
+            : 'Project added successfully. Your file was uploaded and sent for review.',
           'success'
         );
         projectForm.reset();
+        clearSelectedFile();
         document.getElementById('project-id').value = '';
         window.setTimeout(() => {
           window.location.href = '/projects.html';
@@ -234,6 +385,7 @@
     }
   };
 
+  setupUploadDropzone();
   setupProjectForm();
   renderProjectsTable();
 })();

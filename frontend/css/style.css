@@ -1199,6 +1199,12 @@ html[data-theme='dark'] .guideline-item {
   background: linear-gradient(180deg, var(--surface-soft), var(--surface));
 }
 
+.upload-dropzone.is-dragging {
+  border-color: color-mix(in srgb, var(--primary) 55%, white);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-soft) 88%, #eef2ff), var(--surface));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
 .upload-icon {
   width: 44px;
   height: 44px;
@@ -1214,6 +1220,49 @@ html[data-theme='dark'] .guideline-item {
   position: absolute;
   inset: 0;
   opacity: 0;
+  cursor: pointer;
+}
+
+.upload-file-info {
+  width: min(100%, 420px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+}
+
+.upload-file-meta {
+  min-width: 0;
+}
+
+.upload-file-meta strong,
+.upload-file-meta span {
+  display: block;
+}
+
+.upload-file-meta strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-file-meta span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.upload-file-clear {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--primary);
+  font-weight: 700;
   cursor: pointer;
 }
 
