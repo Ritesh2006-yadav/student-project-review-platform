@@ -18,19 +18,12 @@
   const messageBox = document.getElementById('auth-message');
   const title = document.getElementById('auth-title');
   const subtitle = document.getElementById('auth-subtitle');
-  const ssoButtons = document.querySelectorAll('[data-sso-button]');
   const passwordToggles = document.querySelectorAll('[data-password-toggle]');
 
   const tabContent = {
     login: {
-      title: 'Sign in to your workspace',
-      subtitle:
-        'Access your portfolio dashboard, project submissions, and review status in one place.'
-    },
-    register: {
-      title: 'Create your student account',
-      subtitle:
-        'Get started with verified submissions, guided onboarding, and a premium review workflow.'
+      title: 'Student Portal',
+      subtitle: 'Use your student credentials to continue.'
     }
   };
 
@@ -45,9 +38,15 @@
     });
 
     loginForm.classList.toggle('hidden', tab !== 'login');
-    registerForm.classList.toggle('hidden', tab !== 'register');
-    title.textContent = tabContent[tab].title;
-    subtitle.textContent = tabContent[tab].subtitle;
+    if (registerForm) {
+      registerForm.classList.toggle('hidden', tab !== 'register');
+    }
+    if (title && tabContent[tab]) {
+      title.textContent = tabContent[tab].title;
+    }
+    if (subtitle && tabContent[tab]) {
+      subtitle.textContent = tabContent[tab].subtitle;
+    }
     showMessage('');
   };
 
@@ -73,12 +72,6 @@
     button.addEventListener('click', () => togglePasswordVisibility(button));
   });
 
-  ssoButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      showMessage('SSO login can be connected later without changing the current backend flow.');
-    });
-  });
-
   loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -95,25 +88,29 @@
     }
   });
 
-  registerForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-    const formData = new FormData(registerForm);
-    const payload = Object.fromEntries(formData.entries());
+      const formData = new FormData(registerForm);
+      const payload = Object.fromEntries(formData.entries());
 
-    try {
-      const response = await fetchAPI('/api/auth/register', 'POST', payload);
-      setSession(response.data.token, response.data.user);
-      showMessage('Registration successful. Redirecting...', 'success');
-      redirectByRole(response.data.token);
-    } catch (error) {
-      showMessage(error.message, 'error');
-    }
-  });
+      try {
+        const response = await fetchAPI('/api/auth/register', 'POST', payload);
+        setSession(response.data.token, response.data.user);
+        showMessage('Registration successful. Redirecting...', 'success');
+        redirectByRole(response.data.token);
+      } catch (error) {
+        showMessage(error.message, 'error');
+      }
+    });
+  }
 
   if (getStoredUser() && getToken()) {
     redirectByRole(getToken());
   }
 
-  setActiveTab('login');
+  if (tabButtons.length) {
+    setActiveTab('login');
+  }
 })();

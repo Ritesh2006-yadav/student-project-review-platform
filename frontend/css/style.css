@@ -243,6 +243,23 @@ svg {
   opacity: 0.55;
 }
 
+.student-showcase-minimal {
+  min-height: 620px;
+  background:
+    radial-gradient(circle at 22% 24%, rgba(91, 108, 255, 0.16), transparent 24%),
+    linear-gradient(160deg, #0b1220 0%, #121a2b 100%);
+}
+
+.student-showcase-minimal::before {
+  background:
+    radial-gradient(circle at 18% 78%, rgba(125, 141, 255, 0.16), transparent 16%);
+}
+
+.student-showcase-minimal .showcase-grid {
+  background-size: 56px 56px;
+  opacity: 0.52;
+}
+
 .eyebrow,
 .auth-kicker,
 .page-kicker,
