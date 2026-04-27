@@ -350,6 +350,17 @@ svg {
   display: flex;
 }
 
+.auth-brand {
+  align-items: center;
+  gap: 16px;
+}
+
+.auth-brand > div {
+  display: grid;
+  gap: 2px;
+  align-content: center;
+}
+
 .feature-tags {
   flex-wrap: wrap;
   gap: 12px;
@@ -479,12 +490,21 @@ html[data-theme='dark'] .auth-panel::before {
 .brand-badge {
   width: 52px;
   height: 52px;
+  flex: none;
 }
 
 .auth-kicker,
 .page-kicker,
 .panel-kicker {
   color: var(--primary);
+}
+
+.auth-kicker {
+  line-height: 1;
+}
+
+.auth-brand h2 {
+  line-height: 1;
 }
 
 .auth-intro {
