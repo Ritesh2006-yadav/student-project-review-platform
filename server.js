@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/faculty', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'faculty-login.html'));
+  res.redirect('/');
 });
 
 app.get('/dashboard', (req, res) => {
