@@ -1012,6 +1012,10 @@ textarea::placeholder {
   margin-bottom: 18px;
 }
 
+.panel-head h3 {
+  line-height: 1.15;
+}
+
 .panel-link {
   color: var(--primary);
   font-weight: 700;
@@ -1150,24 +1154,34 @@ textarea::placeholder {
 }
 
 .inline-form {
-  gap: 12px;
-  align-items: center;
+  gap: 16px;
+  align-items: stretch;
+  margin-bottom: 18px;
 }
 
 .inline-form input {
   flex: 1;
-  min-height: 48px;
+  min-height: 56px;
+  padding-inline: 18px;
+}
+
+.inline-form .primary-button {
+  min-width: 178px;
 }
 
 .tag-list {
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 14px;
 }
 
 .tag {
+  min-height: 54px;
+  padding: 0 22px;
   color: var(--primary);
   background: var(--primary-soft);
   border: 1px solid transparent;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .tag button {
@@ -1176,6 +1190,8 @@ textarea::placeholder {
   color: inherit;
   cursor: pointer;
   font-weight: 700;
+  font-size: 1.6rem;
+  line-height: 1;
 }
 
 .guideline-list {
