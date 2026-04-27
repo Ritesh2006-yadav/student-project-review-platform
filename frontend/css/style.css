@@ -1395,6 +1395,15 @@ html[data-theme='dark'] .guideline-item {
 
 .icon-button.danger {
   color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, var(--surface-strong));
+  border-color: color-mix(in srgb, var(--danger) 24%, transparent);
+}
+
+.icon-button.danger:hover {
+  color: #ffffff;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  border-color: transparent;
+  box-shadow: 0 16px 28px rgba(239, 68, 68, 0.22);
 }
 
 .empty-state {

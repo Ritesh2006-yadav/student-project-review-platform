@@ -5,6 +5,7 @@
 
 (function initializeAuthPage() {
   const {
+    clearSession,
     fetchAPI,
     getStoredUser,
     getToken,
@@ -96,6 +97,11 @@
 
     try {
       const response = await fetchAPI('/api/auth/login', 'POST', payload);
+      if (response.data.user.role === 'faculty') {
+        clearSession();
+        showMessage('Faculty accounts must sign in through the Faculty Portal.', 'error');
+        return;
+      }
       setSession(response.data.token, response.data.user);
       showMessage('Login successful. Redirecting...', 'success');
       redirectByRole(response.data.token);
@@ -119,6 +125,11 @@
 
       try {
         const response = await fetchAPI('/api/auth/register', 'POST', payload);
+        if (response.data.user.role !== 'student') {
+          clearSession();
+          showMessage('Only student accounts can be created from the Student Portal.', 'error');
+          return;
+        }
         setSession(response.data.token, response.data.user);
         showMessage('Registration successful. Redirecting...', 'success');
         redirectByRole(response.data.token);

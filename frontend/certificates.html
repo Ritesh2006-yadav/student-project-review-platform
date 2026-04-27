@@ -1,0 +1,78 @@
+<!-- Purpose: Displays approved student projects and certificate files. -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Certificates | Student Portfolio Platform</title>
+    <link rel="stylesheet" href="/frontend/css/style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar app-sidebar">
+        <div class="sidebar-top">
+          <a href="/dashboard" class="brand-lockup">
+            <span class="brand-mark">SP</span>
+            <span>
+              <strong>EduPort</strong>
+              <small>Student Portal</small>
+            </span>
+          </a>
+
+          <nav class="nav-links">
+            <a href="/dashboard" class="nav-link">Dashboard</a>
+            <a href="/projects" class="nav-link">My Projects</a>
+            <a href="/add-project" class="nav-link">Upload Project</a>
+            <a href="/certificates" class="nav-link active">My Certificates</a>
+            <span class="nav-link nav-link-muted">Messages</span>
+            <span class="nav-link nav-link-muted">Notifications</span>
+            <span class="nav-link nav-link-muted">Settings</span>
+          </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+          <button class="secondary-button theme-toggle" type="button" data-theme-toggle>
+            Dark Mode
+          </button>
+          <button id="logout-button" class="secondary-button" type="button">Logout</button>
+        </div>
+      </aside>
+
+      <main class="content app-content">
+        <header class="app-header">
+          <div>
+            <p class="page-kicker">My Certificates</p>
+            <h1>Approved project certificates</h1>
+            <p class="page-subcopy">
+              Only approved projects are shown here, along with their certificate files.
+            </p>
+          </div>
+        </header>
+
+        <section class="stats-grid compact-stats">
+          <article class="metric-card metric-green">
+            <span>Approved Projects</span>
+            <strong id="certificates-approved-count">0</strong>
+            <small>Ready for showcase</small>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Approved List</p>
+              <h3>Verified submissions</h3>
+            </div>
+          </div>
+
+          <div id="certificates-list" class="project-stack"></div>
+          <div id="certificates-message" class="message"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/theme.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/certificates.js"></script>
+  </body>
+</html>

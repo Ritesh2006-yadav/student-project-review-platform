@@ -64,7 +64,7 @@
 
     if (!projects.length) {
       portfolioList.innerHTML =
-        '<p class="empty-state">Approved projects will appear here after review.</p>';
+        '<p class="empty-state">Approved certificates will appear here after faculty review.</p>';
       return;
     }
 
@@ -74,7 +74,14 @@
       article.innerHTML = `
         <h4>${project.title}</h4>
         <p>${project.description}</p>
-        <a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Open GitHub</a>
+        <div class="project-card-links">
+          ${
+            project.certificationFile
+              ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View Certificate</a>`
+              : '<span>Certificate file not uploaded</span>'
+          }
+          <a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Open GitHub</a>
+        </div>
       `;
       portfolioList.appendChild(article);
     });

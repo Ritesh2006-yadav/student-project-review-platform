@@ -50,7 +50,7 @@
     const payload = decodeToken(token);
 
     if (payload && payload.role === 'faculty') {
-      window.location.href = '/faculty.html';
+      window.location.href = '/faculty-dashboard.html';
       return;
     }
 

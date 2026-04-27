@@ -50,6 +50,10 @@ app.get('/projects', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'projects.html'));
 });
 
+app.get('/certificates', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'certificates.html'));
+});
+
 app.use((req, res) => {
   res.status(404).json({
     success: false,
