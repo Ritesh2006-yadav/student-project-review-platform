@@ -1394,9 +1394,16 @@ html[data-theme='dark'] .guideline-item {
 }
 
 .icon-button.danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 16px;
+  font-weight: 700;
   color: var(--danger);
-  background: color-mix(in srgb, var(--danger) 10%, var(--surface-strong));
-  border-color: color-mix(in srgb, var(--danger) 24%, transparent);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.14) 0%, rgba(220, 38, 38, 0.1) 100%);
+  border-color: color-mix(in srgb, var(--danger) 28%, transparent);
 }
 
 .icon-button.danger:hover {
