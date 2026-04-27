@@ -474,6 +474,31 @@ html[data-theme='dark'] .auth-panel::before {
   padding: 44px;
 }
 
+.auth-shell-unified {
+  align-items: stretch;
+}
+
+.auth-showcase-unified,
+.auth-panel-unified {
+  min-height: 760px;
+}
+
+.auth-showcase-unified .showcase-content {
+  justify-content: flex-start;
+  gap: 26px;
+}
+
+.auth-showcase-unified .hero-copy {
+  max-width: 28ch;
+  font-size: 1.08rem;
+}
+
+.auth-panel-inner-unified {
+  width: min(100%, 660px);
+  gap: 28px;
+  padding: 56px 54px;
+}
+
 .brand-badge,
 .brand-mark,
 .sidebar-avatar {
@@ -510,6 +535,55 @@ html[data-theme='dark'] .auth-panel::before {
 .auth-intro {
   display: grid;
   gap: 8px;
+}
+
+.role-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px;
+  border-radius: 28px;
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid var(--border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.role-option {
+  min-height: 64px;
+  border: 2px solid transparent;
+  border-radius: 22px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.role-option.active {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.88);
+  border-color: color-mix(in srgb, var(--primary) 75%, white);
+  box-shadow:
+    0 12px 30px rgba(37, 99, 235, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+html[data-theme='dark'] .role-switch {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme='dark'] .role-option.active {
+  background: rgba(8, 15, 28, 0.9);
+  box-shadow:
+    0 16px 30px rgba(25, 92, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .auth-intro p,
@@ -749,6 +823,18 @@ textarea::placeholder {
   color: var(--muted);
   font-size: 0.94rem;
   text-align: center;
+}
+
+.auth-footnote {
+  margin: 12px 0 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.98rem;
+}
+
+.auth-footnote span {
+  color: var(--primary);
+  font-weight: 800;
 }
 
 .message {
@@ -1514,6 +1600,21 @@ html[data-theme='dark'] .guideline-item {
 
   .auth-panel-inner-minimal {
     padding: 28px 24px;
+  }
+
+  .auth-panel-inner-unified {
+    width: 100%;
+    padding: 32px 24px;
+  }
+
+  .auth-showcase-unified,
+  .auth-panel-unified {
+    min-height: auto;
+  }
+
+  .role-option {
+    min-height: 58px;
+    font-size: 0.96rem;
   }
 
   .auth-showcase h1 {

@@ -1,4 +1,4 @@
-<!-- Purpose: Provides a standalone faculty login page separate from the student authentication flow. -->
+<!-- Purpose: Provides the combined student and faculty authentication interface with faculty default. -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +7,7 @@
     <title>Faculty Login | Student Portfolio Platform</title>
     <link rel="stylesheet" href="/frontend/css/style.css" />
   </head>
-  <body class="auth-body">
+  <body class="auth-body" data-auth-default="faculty">
     <button class="theme-fab theme-icon-button" type="button" data-theme-toggle aria-label="Switch theme">
       <span class="theme-icon theme-icon-sun" aria-hidden="true">
         <svg viewBox="0 0 24 24" focusable="false">
@@ -25,13 +25,13 @@
       </span>
     </button>
 
-    <main class="auth-shell auth-shell-split">
-      <section class="auth-showcase faculty-showcase faculty-showcase-minimal">
+    <main class="auth-shell auth-shell-split auth-shell-unified">
+      <section class="auth-showcase auth-showcase-unified">
         <div class="showcase-grid"></div>
         <div class="showcase-content">
-          <p class="eyebrow">Faculty Workspace</p>
-          <h1>Faculty Review Portal</h1>
-          <p class="hero-copy">
+          <p id="auth-eyebrow" class="eyebrow">Faculty Access</p>
+          <h1 id="auth-hero-title">Faculty Review Portal</h1>
+          <p id="auth-hero-copy" class="hero-copy">
             Use your faculty credentials to continue.
           </p>
           <div class="minimal-illustration" aria-hidden="true">
@@ -42,24 +42,31 @@
         </div>
       </section>
 
-      <section class="auth-panel auth-panel-minimal">
-        <div class="auth-panel-inner auth-panel-inner-minimal">
+      <section class="auth-panel auth-panel-minimal auth-panel-unified">
+        <div class="auth-panel-inner auth-panel-inner-minimal auth-panel-inner-unified">
           <div class="auth-brand">
-            <span class="brand-badge">FR</span>
+            <span id="auth-brand-badge" class="brand-badge">FR</span>
             <div>
-              <p class="auth-kicker">Faculty Access</p>
-              <h2>Sign in</h2>
+              <p id="auth-kicker" class="auth-kicker">Faculty Access</p>
+              <h2>EduPort</h2>
             </div>
           </div>
 
-          <div class="auth-intro auth-intro-tight">
-            <h3>Faculty Review Portal</h3>
-            <p>Use your faculty credentials to continue.</p>
+          <div class="role-switch" role="tablist" aria-label="Portal roles">
+            <button type="button" class="role-option" data-role-switch="student">Student</button>
+            <button type="button" class="role-option active" data-role-switch="faculty">Faculty</button>
           </div>
 
-          <form id="faculty-login-form" class="auth-form">
+          <div class="auth-intro">
+            <h3 id="auth-title">Faculty Portal</h3>
+            <p id="auth-subtitle">Use your faculty credentials to sign in.</p>
+          </div>
+
+          <div id="auth-message" class="message" aria-live="polite"></div>
+
+          <form id="login-form" class="auth-form">
             <label class="field">
-              <span>Email</span>
+              <span id="auth-email-label">Faculty Email</span>
               <div class="input-shell">
                 <span class="input-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" focusable="false">
@@ -68,18 +75,12 @@
                     />
                   </svg>
                 </span>
-                <input
-                  type="email"
-                  id="faculty-email"
-                  name="email"
-                  placeholder="teacher@example.edu"
-                  required
-                />
+                <input id="auth-email-input" type="email" name="email" placeholder="teacher@example.edu" required />
               </div>
             </label>
 
             <label class="field">
-              <span>Password</span>
+              <span id="auth-password-label">Password</span>
               <div class="input-shell">
                 <span class="input-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" focusable="false">
@@ -89,8 +90,8 @@
                   </svg>
                 </span>
                 <input
+                  id="auth-password-input"
                   type="password"
-                  id="faculty-password"
                   name="password"
                   placeholder="Enter password"
                   required
@@ -106,15 +107,88 @@
                 </button>
               </div>
             </label>
-            <button type="submit" class="primary-button auth-submit">Login</button>
+
+            <button id="auth-submit-label" type="submit" class="primary-button auth-submit">Sign In as Faculty</button>
+
+            <p id="auth-student-switch" class="auth-switch hidden">
+              New here?
+              <button type="button" class="text-button" data-auth-switch="register">Create account</button>
+            </p>
           </form>
 
-          <div id="faculty-login-message" class="message" aria-live="polite"></div>
+          <form id="register-form" class="auth-form hidden">
+            <label class="field">
+              <span>Name</span>
+              <div class="input-shell">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path
+                      d="M12 12.25a4.125 4.125 0 1 0 0-8.25 4.125 4.125 0 0 0 0 8.25Zm0 1.5c-4.555 0-8.25 2.742-8.25 6.125 0 .621.504 1.125 1.125 1.125h14.25c.621 0 1.125-.504 1.125-1.125 0-3.383-3.695-6.125-8.25-6.125Z"
+                    />
+                  </svg>
+                </span>
+                <input type="text" name="name" placeholder="Your full name" required minlength="2" />
+              </div>
+            </label>
+
+            <label class="field">
+              <span>Student Email</span>
+              <div class="input-shell">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path
+                      d="M4 6.75h16A1.25 1.25 0 0 1 21.25 8v8A1.25 1.25 0 0 1 20 17.25H4A1.25 1.25 0 0 1 2.75 16V8A1.25 1.25 0 0 1 4 6.75Zm0 1.5a.2.2 0 0 0-.2.2v.14l8.2 5.25 8.2-5.25v-.14a.2.2 0 0 0-.2-.2H4Zm16 7.5a.2.2 0 0 0 .2-.2v-5.18l-7.53 4.82a1.25 1.25 0 0 1-1.34 0L3.8 10.37v5.18a.2.2 0 0 0 .2.2h16Z"
+                    />
+                  </svg>
+                </span>
+                <input type="email" name="email" placeholder="student@example.com" required />
+              </div>
+            </label>
+
+            <label class="field">
+              <span>Password</span>
+              <div class="input-shell">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <path
+                      d="M7.75 10V8.75a4.25 4.25 0 1 1 8.5 0V10h.75A2.25 2.25 0 0 1 19.25 12.25v6.5A2.25 2.25 0 0 1 17 21H7a2.25 2.25 0 0 1-2.25-2.25v-6.5A2.25 2.25 0 0 1 7 10h.75Zm1.5 0h5.5V8.75a2.75 2.75 0 0 0-5.5 0V10Zm-2.25 1.5a.75.75 0 0 0-.75.75v6.5c0 .414.336.75.75.75h10a.75.75 0 0 0 .75-.75v-6.5a.75.75 0 0 0-.75-.75H7Zm5 1.75a1.75 1.75 0 0 1 1 3.186V18a.75.75 0 0 1-1.5 0v-1.564a1.75 1.75 0 0 1 .5-3.436Z"
+                    />
+                  </svg>
+                </span>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Create a password"
+                  required
+                  minlength="6"
+                  data-password-input
+                />
+                <button
+                  class="toggle-visibility"
+                  type="button"
+                  data-password-toggle
+                  aria-label="Show password"
+                >
+                  Show
+                </button>
+              </div>
+            </label>
+
+            <button id="auth-register-label" type="submit" class="primary-button auth-submit">Create Student Account</button>
+
+            <p class="auth-switch">
+              Already have an account?
+              <button type="button" class="text-button" data-auth-switch="login">Login</button>
+            </p>
+          </form>
+
+          <p class="auth-footnote">Built with purpose · <span>EduPort</span> Platform</p>
         </div>
       </section>
     </main>
 
     <script src="js/theme.js"></script>
-    <script src="js/faculty.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
   </body>
 </html>
