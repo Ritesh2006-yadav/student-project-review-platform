@@ -1,19 +1,25 @@
 # Student Project Review Platform
-abhi
-A full-stack student project review and verification portal built with `Node.js`, `Express`, `MongoDB`, and plain `HTML/CSS/Vanilla JavaScript`.
 
-The platform supports:
+A full-stack student project submission and faculty verification portal built with `Node.js`, `Express`, `MongoDB`, and plain `HTML`, `CSS`, and `JavaScript`.
+
+The project allows students to create accounts, submit project work, and track approval status, while faculty can review submissions and approve or reject them from a separate dashboard.
+
+## Highlights
+
+- Shared student/faculty authentication UI
 - Student sign up and login
+- Faculty login with role-aware access
 - Project submission with file upload
-- Faculty login and project review
-- Approval/rejection workflow
-- Student dashboard and approved portfolio view
+- Student dashboard, project list, and certificates view
+- Faculty dashboard for approval and rejection workflow
+- JWT-based authentication
+- MongoDB-backed user and project storage
 
 ## Tech Stack
 
 - Backend: `Node.js`, `Express`
-- Database: `MongoDB` with `Mongoose`
-- Auth: `JWT`, `bcryptjs`
+- Database: `MongoDB`, `Mongoose`
+- Authentication: `JWT`, `bcryptjs`
 - Uploads: `multer`
 - Frontend: `HTML`, `CSS`, `Vanilla JavaScript`
 
@@ -29,42 +35,55 @@ routes/
 uploads/
 server.js
 package.json
+README.md
 ```
 
-## Features
+## Main Features
 
 ### Student
-- Create an account
-- Log in securely
-- Add skills
+
+- Register with name, email, and password
+- Log in from the shared portal
+- Update skills
 - Submit projects with:
   - title
   - description
-  - GitHub URL
-  - certification/supporting file
-- View project status
-- Edit or delete submitted projects
-- See approved projects in portfolio view
+  - category
+  - GitHub link
+  - optional certification/supporting file
+- View submitted projects and their status
+- See approved items in `My Certificates`
 
 ### Faculty
-- Log in with faculty credentials
-- Review all student submissions
-- Approve or reject projects
+
+- Log in from the shared portal by switching to faculty mode
+- View all submitted projects
+- Approve or reject submissions
 - Add rejection feedback
+- Monitor project counts from the faculty dashboard
+
+## Authentication Flow
+
+- `/` serves the shared login page
+- Students can register and log in from the same auth page
+- Faculty use the same auth page but switch to `Faculty`
+- Role checks in the frontend prevent:
+  - faculty accounts from signing in through student mode
+  - student accounts from signing in through faculty mode
 
 ## Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root with:
 
 ```env
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
-PORT=3000
 ```
 
 Notes:
-- `PORT` is optional locally because the app defaults to `3000`
-- In production, the hosting platform usually provides `PORT`
+
+- `PORT` is optional locally because the server already defaults to `3000`
+- On Render or other hosting providers, do not manually set `PORT` unless required
 
 ## Installation
 
@@ -78,8 +97,7 @@ npm install
 npm start
 ```
 
-Server starts from:
-- [server.js](/Users/riteshyadav/Documents/fullstack/server.js)
+The app starts from [server.js](/Users/riteshyadav/Documents/fullstack/server.js).
 
 Default local URL:
 
@@ -87,15 +105,17 @@ Default local URL:
 http://localhost:3000
 ```
 
-## Main Routes
+## API Routes
 
 ### Auth
+
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 - `GET /api/auth/me`
 - `PUT /api/auth/skills`
 
 ### Projects
+
 - `GET /api/projects`
 - `POST /api/projects`
 - `PUT /api/projects/:id`
@@ -103,23 +123,25 @@ http://localhost:3000
 - `GET /api/projects/portfolio`
 
 ### Faculty
+
 - `GET /api/faculty/projects`
 - `PUT /api/faculty/projects/:id`
 
-## Frontend Pages
+## Frontend Routes
 
-- `/` → student login / sign up
-- `/faculty` → faculty login
-- `/dashboard` → student dashboard
-- `/add-project` → project submission
-- `/projects` → student project list
-- `/faculty-dashboard.html` → faculty dashboard
+- `/` -> shared student/faculty auth page
+- `/dashboard` -> student dashboard
+- `/add-project` -> project submission page
+- `/projects` -> student projects page
+- `/certificates` -> approved certificates page
+- `/faculty-dashboard.html` -> faculty dashboard
 
-## File Uploads
+## File Upload Notes
 
-Project files are uploaded through `multer` and stored in the local `uploads/` folder.
+Project uploads are handled by `multer` and stored in the local `uploads/` folder.
 
 Supported frontend file types:
+
 - PDF
 - DOC
 - DOCX
@@ -127,31 +149,47 @@ Supported frontend file types:
 - PPTX
 - Images
 
-Important production note:
-- Local `uploads/` storage is fine for development
-- For production deployment, use cloud storage such as Cloudinary, AWS S3, or Firebase Storage
+Important:
 
-## Deployment Notes
+- local file storage is fine for development
+- local uploads are not ideal for production hosting
+- for production, use cloud storage such as Cloudinary, AWS S3, or similar
 
-If deploying to a Node/Express-compatible host:
-- Preset: `Express`
-- Root directory: `./`
-- Install command: `npm install`
+## Render Deployment
+
+Use these settings on Render:
+
+- Service Type: `Web Service`
+- Environment: `Node`
+- Root Directory: leave empty if the repo root is this project
+- Build Command: `npm install`
+- Start Command: `npm start`
 
 Required environment variables:
+
 - `MONGODB_URI`
 - `JWT_SECRET`
 
-## Security Note
+Do not add:
 
-Do not commit real secrets to the repository.
+- `PORT`
 
-If you accidentally expose:
-- MongoDB password
-- JWT secret
+## Important Files
 
-rotate them immediately before deployment.
+- [server.js](/Users/riteshyadav/Documents/fullstack/server.js) -> app entry point
+- [config/db.js](/Users/riteshyadav/Documents/fullstack/config/db.js) -> MongoDB connection
+- [controllers/authController.js](/Users/riteshyadav/Documents/fullstack/controllers/authController.js) -> register/login/profile logic
+- [controllers/projectController.js](/Users/riteshyadav/Documents/fullstack/controllers/projectController.js) -> project CRUD and portfolio logic
+- [controllers/facultyController.js](/Users/riteshyadav/Documents/fullstack/controllers/facultyController.js) -> faculty review workflow
+- [frontend/index.html](/Users/riteshyadav/Documents/fullstack/frontend/index.html) -> shared auth UI
+- [frontend/faculty-dashboard.html](/Users/riteshyadav/Documents/fullstack/frontend/faculty-dashboard.html) -> faculty dashboard
+
+## Security Notes
+
+- Never commit real secrets to the repository
+- Rotate any exposed database password immediately
+- Use a long random value for `JWT_SECRET`
 
 ## License
 
-This project is for educational and portfolio use.
+This project is intended for educational and portfolio use.
