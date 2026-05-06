@@ -18,6 +18,8 @@
   const fileInput = document.getElementById('certificationFile');
   const uploadDropzone = document.getElementById('upload-dropzone');
   const uploadFileInfo = document.getElementById('upload-file-info');
+  const sectionSelect = document.getElementById('section');
+  const teacherSelect = document.getElementById('assigned_teacher');
   const projectsTableBody = document.getElementById('projects-table-body');
   const projectsMessage = document.getElementById('projects-message');
   const projectsCardList = document.getElementById('projects-card-list');
@@ -68,6 +70,36 @@
     }
 
     return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const getProjectFileUrl = (project) => project.certificationFile || project.file || '';
+
+  const getProjectTeacherId = (project) => {
+    if (!project.assigned_teacher) {
+      return '';
+    }
+
+    return typeof project.assigned_teacher === 'object'
+      ? project.assigned_teacher._id
+      : project.assigned_teacher;
+  };
+
+  const loadTeacherOptions = async () => {
+    if (!teacherSelect) {
+      return;
+    }
+
+    try {
+      const response = await fetchAPI('/api/auth/faculty');
+      teacherSelect.innerHTML = [
+        '<option value="">Select teacher</option>',
+        ...response.data.map(
+          (teacher) => `<option value="${teacher._id}">${teacher.name} (${teacher.email})</option>`
+        )
+      ].join('');
+    } catch (error) {
+      showMessage(projectMessage, error.message, 'error');
+    }
   };
 
   const renderSelectedFile = () => {
@@ -206,6 +238,12 @@
       document.getElementById('title').value = project.title;
       document.getElementById('description').value = project.description;
       document.getElementById('githubUrl').value = project.githubUrl;
+      if (sectionSelect) {
+        sectionSelect.value = project.section || '';
+      }
+      if (teacherSelect) {
+        teacherSelect.value = getProjectTeacherId(project);
+      }
       clearSelectedFile();
       showMessage(projectMessage, 'Editing existing project. Saving will reset status to pending.');
     } catch (error) {
@@ -213,10 +251,12 @@
     }
   };
 
-  const setupProjectForm = () => {
+  const setupProjectForm = async () => {
     if (!projectForm) {
       return;
     }
+
+    await loadTeacherOptions();
 
     const editId = getEditId();
     if (editId) {
@@ -231,6 +271,16 @@
       const endpoint = projectId ? `/api/projects/${projectId}` : '/api/projects';
       const method = projectId ? 'PUT' : 'POST';
       const fileValidationMessage = selectedUploadFile ? validateUploadFile(selectedUploadFile) : '';
+
+      if (!formData.get('section') || !formData.get('assigned_teacher')) {
+        showMessage(projectMessage, 'Please select both section and teacher before submitting.', 'error');
+        return;
+      }
+
+      if (!projectId && !selectedUploadFile) {
+        showMessage(projectMessage, 'Please choose a project file before submitting.', 'error');
+        return;
+      }
 
       if (fileValidationMessage) {
         showMessage(projectMessage, fileValidationMessage, 'error');
@@ -312,8 +362,8 @@
                 </td>
                 <td>
                   ${
-                    project.certificationFile
-                      ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View File</a>`
+                    getProjectFileUrl(project)
+                      ? `<a href="/${getProjectFileUrl(project)}" target="_blank" rel="noopener noreferrer">View File</a>`
                       : 'Not uploaded'
                   }
                 </td>
@@ -353,8 +403,8 @@
                   <div class="project-card-links">
                     <a href="${project.githubUrl}" target="_blank" rel="noopener noreferrer">Open Repository</a>
                     ${
-                      project.certificationFile
-                        ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View Certificate</a>`
+                      getProjectFileUrl(project)
+                        ? `<a href="/${getProjectFileUrl(project)}" target="_blank" rel="noopener noreferrer">View Certificate</a>`
                         : '<span>Certificate not uploaded</span>'
                     }
                   </div>

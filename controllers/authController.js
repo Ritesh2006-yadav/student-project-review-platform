@@ -125,6 +125,21 @@ const getCurrentUser = async (req, res, next) => {
   }
 };
 
+const getFacultyOptions = async (req, res, next) => {
+  try {
+    const faculty = await User.find({ role: 'faculty' })
+      .select('name email')
+      .sort({ name: 1 });
+
+    res.json({
+      success: true,
+      data: faculty
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateSkills = async (req, res, next) => {
   try {
     const { skills } = req.body;
@@ -161,5 +176,6 @@ module.exports = {
   register,
   login,
   getCurrentUser,
+  getFacultyOptions,
   updateSkills
 };

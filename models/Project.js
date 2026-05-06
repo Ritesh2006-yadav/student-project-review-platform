@@ -31,6 +31,20 @@ const projectSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    file: {
+      type: String,
+      default: ''
+    },
+    section: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    assigned_teacher: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
     status: {
       type: String,
       enum: ['pending', 'approved', 'rejected'],

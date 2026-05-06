@@ -4,18 +4,27 @@
  */
 
 const Project = require('../models/Project');
+const User = require('../models/User');
+const mongoose = require('mongoose');
 
 const formatProjectPayload = (project, filePath) => ({
   title: project.title,
   description: project.description,
   githubUrl: project.githubUrl,
   certificationFile: filePath !== undefined ? filePath : project.certificationFile,
+  file: filePath !== undefined ? filePath : project.file,
+  section: project.section,
+  assigned_teacher: project.assigned_teacher,
   status: 'pending'
 });
 
+const isValidFacultyId = (teacherId) => mongoose.isValidObjectId(teacherId);
+
 const getProjects = async (req, res, next) => {
   try {
-    const projects = await Project.find({ studentId: req.user.id }).sort({ createdAt: -1 });
+    const projects = await Project.find({ studentId: req.user.id })
+      .populate('assigned_teacher', 'name email')
+      .sort({ createdAt: -1 });
 
     res.json({
       success: true,
@@ -28,12 +37,30 @@ const getProjects = async (req, res, next) => {
 
 const createProject = async (req, res, next) => {
   try {
-    const { title, description, githubUrl } = req.body;
+    const { title, description, githubUrl, section, assigned_teacher } = req.body;
 
-    if (!title || !description || !githubUrl) {
+    if (!title || !description || !githubUrl || !section || !assigned_teacher) {
       return res.status(400).json({
         success: false,
-        message: 'Title, description, and GitHub URL are required'
+        message: 'Title, description, GitHub URL, section, and teacher are required'
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'Project file is required'
+      });
+    }
+
+    const teacher = isValidFacultyId(assigned_teacher)
+      ? await User.findOne({ _id: assigned_teacher, role: 'faculty' })
+      : null;
+
+    if (!teacher) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please select a valid faculty member'
       });
     }
 
@@ -65,12 +92,23 @@ const updateProject = async (req, res, next) => {
       });
     }
 
-    const { title, description, githubUrl } = req.body;
+    const { title, description, githubUrl, section, assigned_teacher } = req.body;
 
-    if (!title || !description || !githubUrl) {
+    if (!title || !description || !githubUrl || !section || !assigned_teacher) {
       return res.status(400).json({
         success: false,
-        message: 'Title, description, and GitHub URL are required'
+        message: 'Title, description, GitHub URL, section, and teacher are required'
+      });
+    }
+
+    const teacher = isValidFacultyId(assigned_teacher)
+      ? await User.findOne({ _id: assigned_teacher, role: 'faculty' })
+      : null;
+
+    if (!teacher) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please select a valid faculty member'
       });
     }
 
@@ -78,6 +116,9 @@ const updateProject = async (req, res, next) => {
     project.description = description;
     project.githubUrl = githubUrl;
     project.certificationFile = req.file ? req.file.path : project.certificationFile;
+    project.file = req.file ? req.file.path : project.file;
+    project.section = section;
+    project.assigned_teacher = assigned_teacher;
     project.status = 'pending';
 
     await project.save();

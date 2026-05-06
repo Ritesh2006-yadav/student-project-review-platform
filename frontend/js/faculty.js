@@ -22,6 +22,7 @@
   const facultyApproved = document.getElementById('faculty-approved-projects');
   const facultyPending = document.getElementById('faculty-pending-projects');
   const facultyRejected = document.getElementById('faculty-rejected-projects');
+  const facultySectionSelect = document.getElementById('faculty-section-select');
   const passwordToggles = document.querySelectorAll('[data-password-toggle]');
   const ssoButtons = document.querySelectorAll('[data-sso-button]');
 
@@ -88,6 +89,8 @@
       year: 'numeric'
     });
   };
+
+  const getProjectFileUrl = (project) => project.certificationFile || project.file || '';
 
   const renderNotifications = (projects) => {
     if (!facultyNotifications) {
@@ -180,7 +183,7 @@
     if (!projects.length) {
       if (projectsTable) {
         projectsTable.innerHTML =
-          '<tr><td colspan="8" class="empty-state">No student projects found.</td></tr>';
+          '<tr><td colspan="9" class="empty-state">No student projects found.</td></tr>';
       }
       if (facultyCards) {
         facultyCards.innerHTML =
@@ -197,6 +200,7 @@
               <td>${project.studentId ? project.studentId.name : 'Unknown Student'}</td>
               <td>${project.studentId ? project.studentId.email : 'N/A'}</td>
               <td>${project.title}</td>
+              <td>${project.section || 'N/A'}</td>
               <td>${project.description || 'No description provided'}</td>
               <td>
                 ${
@@ -207,8 +211,8 @@
               </td>
               <td>
                 ${
-                  project.certificationFile
-                    ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View File</a>`
+                  getProjectFileUrl(project)
+                    ? `<a href="/${getProjectFileUrl(project)}" target="_blank" rel="noopener noreferrer">View File</a>`
                     : 'No file uploaded'
                 }
               </td>
@@ -239,6 +243,7 @@
                   ${project.studentId ? project.studentId.name : 'Unknown Student'}
                   · ${project.studentId ? project.studentId.email : 'N/A'}
                 </small>
+                <small>${project.section || 'Unassigned section'}</small>
               </div>
               <span class="faculty-status-badge ${getStatusClass(project.status)}">${project.status}</span>
             </div>
@@ -252,8 +257,8 @@
                     : '<span>No GitHub link</span>'
                 }
                 ${
-                  project.certificationFile
-                    ? `<a href="/${project.certificationFile}" target="_blank" rel="noopener noreferrer">View File</a>`
+                  getProjectFileUrl(project)
+                    ? `<a href="/${getProjectFileUrl(project)}" target="_blank" rel="noopener noreferrer">View File</a>`
                     : '<span>No file uploaded</span>'
                 }
               </div>
@@ -282,9 +287,42 @@
 
   const loadProjects = async () => {
     try {
-      const result = await facultyFetch('/api/faculty/projects');
+      const section = facultySectionSelect ? facultySectionSelect.value : '';
+
+      if (!section) {
+        renderProjects([]);
+        showMessage(dashboardMessage, 'Select a section to view assigned projects.');
+        return;
+      }
+
+      const result = await facultyFetch(`/api/faculty/projects?section=${encodeURIComponent(section)}`);
       renderProjects(result.data);
       showMessage(dashboardMessage, '');
+    } catch (error) {
+      showMessage(dashboardMessage, error.message, 'error');
+    }
+  };
+
+  const loadSections = async () => {
+    if (!facultySectionSelect) {
+      await loadProjects();
+      return;
+    }
+
+    try {
+      const result = await facultyFetch('/api/faculty/sections');
+      facultySectionSelect.innerHTML = [
+        '<option value="">Select section</option>',
+        ...result.data.map((section) => `<option value="${section}">${section}</option>`)
+      ].join('');
+
+      if (result.data.length) {
+        facultySectionSelect.value = result.data[0];
+        await loadProjects();
+      } else {
+        renderProjects([]);
+        showMessage(dashboardMessage, 'No sections assigned yet.');
+      }
     } catch (error) {
       showMessage(dashboardMessage, error.message, 'error');
     }
@@ -398,6 +436,10 @@
       });
     }
 
-    loadProjects();
+    if (facultySectionSelect) {
+      facultySectionSelect.addEventListener('change', loadProjects);
+    }
+
+    loadSections();
   }
 })();

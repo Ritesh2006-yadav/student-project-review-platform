@@ -722,6 +722,7 @@ html[data-theme='dark'] .role-option.active {
 }
 
 input,
+select,
 textarea {
   width: 100%;
   border-radius: 16px;
@@ -738,10 +739,16 @@ textarea {
 
 .inline-form input,
 .project-form input,
+.project-form select,
 .project-form textarea,
 .search-shell input,
+select,
 textarea {
   padding: 14px 16px;
+}
+
+select {
+  min-height: 51px;
 }
 
 .toggle-visibility {
@@ -762,6 +769,7 @@ textarea {
 }
 
 input:focus,
+select:focus,
 textarea:focus {
   outline: none;
   border-color: color-mix(in srgb, var(--primary) 56%, white);
