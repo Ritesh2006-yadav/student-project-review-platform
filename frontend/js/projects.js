@@ -90,11 +90,11 @@
     }
 
     try {
-      const response = await fetchAPI('/api/auth/faculty');
+      const response = await fetchAPI('/api/faculty/list');
       teacherSelect.innerHTML = [
         '<option value="">Select teacher</option>',
         ...response.data.map(
-          (teacher) => `<option value="${teacher._id}">${teacher.name} (${teacher.email})</option>`
+          (teacher) => `<option value="${teacher._id}">${teacher.name}</option>`
         )
       ].join('');
     } catch (error) {

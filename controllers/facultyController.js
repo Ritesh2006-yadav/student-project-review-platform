@@ -4,6 +4,28 @@
  */
 
 const Project = require('../models/Project');
+const User = require('../models/User');
+
+const getFacultyList = async (req, res) => {
+  try {
+    const faculty = await User.find({
+      role: 'faculty',
+      name: { $ne: 'Faculty User' }
+    })
+      .select('_id name')
+      .sort({ name: 1 });
+
+    return res.json({
+      success: true,
+      data: faculty
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
 
 const getFacultySections = async (req, res) => {
   try {
@@ -96,6 +118,7 @@ const updateProjectStatus = async (req, res) => {
 };
 
 module.exports = {
+  getFacultyList,
   getFacultySections,
   getAllProjects,
   updateProjectStatus
