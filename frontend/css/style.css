@@ -1487,6 +1487,42 @@ html[data-theme='dark'] .guideline-item {
   gap: 8px;
 }
 
+.icon-button.edit-button {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0;
+  border-radius: 14px;
+  color: var(--primary);
+  background: linear-gradient(135deg, rgba(91, 108, 255, 0.12) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border-color: color-mix(in srgb, var(--primary) 24%, transparent);
+  box-shadow: 0 14px 26px rgba(91, 108, 255, 0.14);
+}
+
+.icon-button.edit-button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-button.edit-button:hover {
+  color: #ffffff;
+  background: linear-gradient(135deg, #5b6cff 0%, #8b5cf6 100%);
+  border-color: transparent;
+  box-shadow: 0 16px 28px rgba(91, 108, 255, 0.24);
+}
+
+.icon-button.edit-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 34%, transparent);
+  outline-offset: 3px;
+}
+
 .icon-button.danger {
   display: inline-flex;
   align-items: center;

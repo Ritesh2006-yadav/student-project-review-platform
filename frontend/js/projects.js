@@ -33,6 +33,12 @@
     approved: 'status-approved',
     rejected: 'status-rejected'
   };
+  const editIcon = `
+    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+    </svg>
+  `;
   const allowedExtensions = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'png', 'jpg', 'jpeg', 'gif', 'webp'];
   const maxUploadSize = 10 * 1024 * 1024;
   let selectedUploadFile = null;
@@ -373,7 +379,7 @@
                 <td>${project.feedback || 'Awaiting review'}</td>
                 <td>
                   <div class="action-group">
-                    <a class="icon-button" href="/add-project.html?edit=${project._id}">Edit</a>
+                    <a class="icon-button edit-button" href="/add-project.html?edit=${project._id}" aria-label="Edit project" title="Edit">${editIcon}</a>
                     <button class="icon-button danger" data-delete-id="${project._id}" type="button">Delete</button>
                   </div>
                 </td>
@@ -409,7 +415,7 @@
                     }
                   </div>
                   <div class="action-group">
-                    <a class="icon-button" href="/add-project.html?edit=${project._id}">Edit</a>
+                    <a class="icon-button edit-button" href="/add-project.html?edit=${project._id}" aria-label="Edit project" title="Edit">${editIcon}</a>
                     <button class="icon-button danger" data-delete-id="${project._id}" type="button">Delete</button>
                   </div>
                 </div>
